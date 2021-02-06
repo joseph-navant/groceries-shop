@@ -5,5 +5,45 @@
 </ion-header>
 
 <ion-content>
+  <ng-container *ngIf="groceries; else skeleton">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-xl="2" size-md="4" size-xs="6" *ngFor="let grocery of groceries">
+          <ion-card>
+            <ion-img [src]="grocery.image_url"></ion-img>
+            <ion-card-content>
+              <h3>{{ grocery.productName }}</h3>
+              <ion-text color="primary">
+                <p>${{ grocery.price }}</p>
+              </ion-text>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadNextProductsPage()">
+      <ion-infinite-scroll-content loadingSpinner="dots"></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ng-container>
+
+  <ng-template #skeleton>
+    <ion-grid>
+      <ion-row>
+        <ion-col size-xl="1" size-md="3" size-xs="6" *ngFor="let grocery of [].constructor(10)">
+          <ion-card>
+            <ion-skeleton-text animated style="height: 100px"></ion-skeleton-text>
+            <ion-card-content>
+              <h3>
+                <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+              </h3>
+              <p>
+                <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+              </p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-template>
 </ion-content>
