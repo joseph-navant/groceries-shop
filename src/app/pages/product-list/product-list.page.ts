@@ -3,7 +3,6 @@ import { IonInfiniteScroll, NavController } from '@ionic/angular';
 import { Grocery } from 'src/app/core/models/grocery';
 import { CartHelper } from 'src/app/core/services/helper/cart-helper.service';
 import { GroceriesService } from 'src/app/core/services/http/groceries.service';
-import { UIService } from 'src/app/core/services/internal/ui.service';
 
 @Component({
   selector: 'app-product-list',
@@ -21,8 +20,7 @@ export class ProductListPage implements OnInit {
   constructor(
     private readonly cartHelper: CartHelper,
     private readonly groceriesService: GroceriesService,
-    private readonly navCtrl: NavController,
-    private readonly uiService: UIService
+    private readonly navCtrl: NavController
   ) {}
 
   ngOnInit() {
@@ -32,12 +30,10 @@ export class ProductListPage implements OnInit {
 
   onAddGrocery(grocery: Grocery) {
     this.cartHelper.add(grocery);
-    this.uiService.presentToast({ message: `${grocery.productName} added` });
   }
 
   onRemoveGrocery(grocery: Grocery) {
     this.cartHelper.remove(grocery);
-    this.uiService.presentToast({ message: `${grocery.productName} removed` });
   }
 
   onFavGrocery(grocery: Grocery) {
