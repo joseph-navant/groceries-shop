@@ -41,3 +41,17 @@ export const mapGroceryFromServer = (serverGrocery: ServerGrocery) => {
 
   return grocery;
 };
+
+export const mapGroceryFromApp = (grocery: Grocery) => {
+  const serverGrocery: ServerGrocery = {
+    id: grocery.id,
+    image_url: grocery.imageUrl,
+    stock: grocery.stock,
+    productName: grocery.productName,
+    productDescription: grocery.productDescription,
+    price: grocery.price,
+    favorite: grocery.isFavorite ? 1 : 0,
+  };
+
+  return serverGrocery;
+};

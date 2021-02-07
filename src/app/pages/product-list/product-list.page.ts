@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonInfiniteScroll, NavController } from '@ionic/angular';
+import { IonInfiniteScroll, LoadingController } from '@ionic/angular';
 import { Cart } from 'src/app/core/models/cart';
 import { Grocery } from 'src/app/core/models/grocery';
 import { CartHelper } from 'src/app/core/services/helper/cart-helper.service';
@@ -15,12 +15,13 @@ export class ProductListPage implements OnInit {
   infiniteScroll: IonInfiniteScroll;
   cart: Cart;
   groceries: Grocery[];
+  private loading: HTMLIonLoadingElement;
   private page = 1;
 
   constructor(
     private readonly cartHelper: CartHelper,
     private readonly groceriesService: GroceriesService,
-    private readonly navCtrl: NavController
+    private readonly loadingCtrl: LoadingController
   ) {}
 
   ngOnInit() {
@@ -36,8 +37,10 @@ export class ProductListPage implements OnInit {
     this.cartHelper.remove(grocery);
   }
 
-  onFavGrocery(grocery: Grocery) {
-    this.favGrocery(grocery);
+  async onFavGrocery(grocery: Grocery, index: number) {
+    this.loading = await this.loadingCtrl.create();
+    await this.loading.present();
+    this.favGrocery(grocery, index);
   }
 
   loadNextGroceriesPage() {
@@ -75,8 +78,18 @@ export class ProductListPage implements OnInit {
     );
   }
 
-  private favGrocery(grocery: Grocery) {
-    this.groceriesService.favGrocery(grocery);
+  private favGrocery(grocery: Grocery, index: number) {
+    this.groceriesService.favGrocery(grocery).subscribe(
+      (updatedGrocery: Grocery) => {
+        this.groceries[index] = updatedGrocery;
+        this.loading.dismiss();
+      },
+      (err) => {
+        this.loading.dismiss();
+        console.error('🚀 ~ ProductListPage ~ initGroceries ~ err', err);
+        // TODO: handle error
+      }
+    );
   }
 
   private completeInfiniteScroll() {

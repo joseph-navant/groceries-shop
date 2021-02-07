@@ -19,9 +19,9 @@
         <ng-container *ngIf="groceries; else skeleton">
           <ion-grid class="ion-no-padding">
             <ion-row>
-              <ion-col *ngFor="let grocery of groceries" size-xl="3" size-lg="4" size-md="4" size-sm="4" size-xs="6">
+              <ion-col *ngFor="let grocery of groceries; let i=index" size-xl="3" size-lg="4" size-md="4" size-sm="4" size-xs="6">
                 <ion-card>
-                  <ion-button class="fav-button" color="primary" size="small" fill="clear" (click)="onFavGrocery(grocery)">
+                  <ion-button class="fav-button" color="primary" size="small" fill="clear" (click)="onFavGrocery(grocery, i)">
                     <ion-icon [name]="grocery.isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
                   </ion-button>
                   <ion-img [src]="grocery.imageUrl"></ion-img>

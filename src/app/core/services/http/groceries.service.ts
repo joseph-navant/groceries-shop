@@ -2,9 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { from } from 'rxjs';
 import { map, switchMap, toArray } from 'rxjs/internal/operators';
+import { deepClone } from 'src/app/shared/utils/object';
 import { environment } from 'src/environments/environment';
 import {
   Grocery,
+  mapGroceryFromApp,
   mapGroceryFromServer,
   ServerGrocery,
 } from '../../models/grocery';
@@ -30,6 +32,14 @@ export class GroceriesService {
   }
 
   favGrocery(grocery: Grocery) {
-    // TODO
+    const g: Grocery = deepClone(grocery);
+    g.isFavorite = !grocery.isFavorite;
+
+    const url = `${environment.baseUrl}/${grocery.id}`;
+    const body: ServerGrocery = mapGroceryFromApp(g);
+
+    return this.httpClient
+      .patch<ServerGrocery>(url, body)
+      .pipe(map((serverGrocery) => mapGroceryFromServer(serverGrocery)));
   }
 }
