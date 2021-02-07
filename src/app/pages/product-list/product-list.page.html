@@ -2,9 +2,9 @@
   <ion-toolbar>
     <ion-title>Groceries</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="onNavToCart()">
+      <ion-button routerLink="/cart">
         <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
-        <ion-badge color="primary">{{ cartQuantity }}</ion-badge>
+        <ion-badge color="primary">{{ cart.quantity }}</ion-badge>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -70,11 +70,11 @@
       <ion-col class="cart ion-hide-xl-down" size="3">
         <h2 class="ion-text-center">Cart</h2>
 
-        <div *ngIf="!cartGroceries || cartGroceries.length === 0" class="cart-empty">
+        <div *ngIf="!cart.groceries || cart.groceries.length === 0" class="cart-empty">
           <p>Your cart is empty</p>
         </div>
         <ion-list>
-          <ng-container *ngFor="let grocery of cartGroceries">
+          <ng-container *ngFor="let grocery of cart.groceries">
             <app-cart-item [grocery]="grocery"
                            (add)="onAddGrocery(grocery)"
                            (remove)="onRemoveGrocery(grocery)">

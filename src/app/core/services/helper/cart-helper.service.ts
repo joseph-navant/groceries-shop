@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Cart } from '../../models/cart';
 import { Grocery } from '../../models/grocery';
 
 @Injectable({
@@ -7,9 +8,13 @@ import { Grocery } from '../../models/grocery';
 })
 export class CartHelper {
   private groceries: Grocery[] = [];
-  private cart: BehaviorSubject<Grocery[]> = new BehaviorSubject(
-    this.groceries
-  );
+  private amount = 0;
+  private quantity = 0;
+  private cart: BehaviorSubject<Cart> = new BehaviorSubject({
+    groceries: this.groceries,
+    amount: this.amount,
+    quantity: this.quantity,
+  });
   cart$ = this.cart.asObservable();
 
   constructor() {}
@@ -21,8 +26,15 @@ export class CartHelper {
     } else {
       this.groceries.push({ ...grocery, unitsInCart: 1 });
     }
+    this.amount = this.amount + grocery.price;
+    this.quantity = this.quantity + 1;
 
-    this.cart.next(this.groceries);
+    const cart = {
+      groceries: this.groceries,
+      amount: this.amount,
+      quantity: this.quantity,
+    };
+    this.cart.next(cart);
   }
 
   remove(grocery: Grocery) {
@@ -36,7 +48,14 @@ export class CartHelper {
     } else {
       this.groceries.splice(cartGroceryIndex, 1);
     }
+    this.amount = this.amount - grocery.price;
+    this.quantity = this.quantity - 1;
 
-    this.cart.next(this.groceries);
+    const cart = {
+      groceries: this.groceries,
+      amount: this.amount,
+      quantity: this.quantity,
+    };
+    this.cart.next(cart);
   }
 }

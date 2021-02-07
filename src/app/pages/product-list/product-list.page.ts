@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonInfiniteScroll, NavController } from '@ionic/angular';
+import { Cart } from 'src/app/core/models/cart';
 import { Grocery } from 'src/app/core/models/grocery';
 import { CartHelper } from 'src/app/core/services/helper/cart-helper.service';
 import { GroceriesService } from 'src/app/core/services/http/groceries.service';
@@ -12,8 +13,7 @@ import { GroceriesService } from 'src/app/core/services/http/groceries.service';
 export class ProductListPage implements OnInit {
   @ViewChild(IonInfiniteScroll)
   infiniteScroll: IonInfiniteScroll;
-  cartGroceries: Grocery[];
-  cartQuantity = 0;
+  cart: Cart;
   groceries: Grocery[];
   private page = 1;
 
@@ -40,23 +40,13 @@ export class ProductListPage implements OnInit {
     this.favGrocery(grocery);
   }
 
-  onNavToCart() {
-    this.navToCart();
-  }
-
   loadNextGroceriesPage() {
     this.loadGroceries(++this.page);
   }
 
   private initCart() {
-    this.cartHelper.cart$.subscribe((cartGroceries: Grocery[]) => {
-      let cartQuantity = 0;
-      for (const cartGrocery of cartGroceries) {
-        cartQuantity += cartGrocery.unitsInCart;
-      }
-
-      this.cartGroceries = cartGroceries;
-      this.cartQuantity = cartQuantity;
+    this.cartHelper.cart$.subscribe((cart: Cart) => {
+      this.cart = cart;
     });
   }
 
@@ -97,11 +87,5 @@ export class ProductListPage implements OnInit {
 
   private disableInfiniteScroll() {
     this.infiniteScroll.disabled = true;
-  }
-
-  private navToCart() {
-    this.navCtrl.navigateForward('/cart', {
-      state: { cartGroceries: this.cartGroceries },
-    });
   }
 }
