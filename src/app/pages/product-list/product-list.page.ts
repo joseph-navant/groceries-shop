@@ -20,7 +20,11 @@ export class ProductListPage implements OnInit {
     this.initGroceries();
   }
 
-  loadNextProductsPage() {
+  onFavGrocery(grocery: Grocery) {
+    this.favGrocery(grocery);
+  }
+
+  loadNextGroceriesPage() {
     this.loadGroceries(++this.page);
   }
 
@@ -47,6 +51,10 @@ export class ProductListPage implements OnInit {
         // TODO: handle error
       }
     );
+  }
+
+  private favGrocery(grocery: Grocery) {
+    this.groceriesService.favGrocery(grocery);
   }
 
   private completeInfiniteScroll() {

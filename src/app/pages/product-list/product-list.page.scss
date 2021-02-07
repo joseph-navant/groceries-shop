@@ -1,3 +1,15 @@
+.fav {
+  position: absolute;
+  top: 0;
+  right: 0;
+  --padding-start: 8px;
+  --padding-end: 8px;
+
+  & > ion-icon {
+    color: white;
+  }
+}
+
 ion-card-content {
   padding: 8px;
 }

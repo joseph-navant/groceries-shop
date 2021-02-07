@@ -8,9 +8,12 @@
   <ng-container *ngIf="groceries; else skeleton">
     <ion-grid>
       <ion-row>
-        <ion-col size-xl="2" size-md="4" size-xs="6" *ngFor="let grocery of groceries">
+        <ion-col *ngFor="let grocery of groceries" size-xl="2" size-md="4" size-xs="6">
           <ion-card>
-            <ion-img [src]="grocery.image_url"></ion-img>
+            <ion-button class="fav" color="primary" size="small" fill="clear" (click)="onFavGrocery(grocery)">
+              <ion-icon [name]="grocery.isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
+            </ion-button>
+            <ion-img [src]="grocery.imageUrl"></ion-img>
             <ion-card-content>
               <h3>{{ grocery.productName }}</h3>
               <ion-text color="primary">
@@ -22,7 +25,7 @@
       </ion-row>
     </ion-grid>
 
-    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadNextProductsPage()">
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadNextGroceriesPage()">
       <ion-infinite-scroll-content loadingSpinner="dots"></ion-infinite-scroll-content>
     </ion-infinite-scroll>
   </ng-container>
