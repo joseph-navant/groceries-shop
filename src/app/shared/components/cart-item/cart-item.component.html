@@ -9,13 +9,13 @@
         <p class="ion-text-end">${{ grocery.price }}</p>
       </ion-text>
       <div class="amount-selector">
-        <ion-button size="small" color="dark" fill="clear">
+        <ion-button size="small" color="dark" fill="clear" (click)="onRemove($event)">
           <ion-icon slot="icon-only" name="remove"></ion-icon>
         </ion-button>
 
-        <ion-label>1</ion-label>
+        <ion-label>{{ grocery.unitsInCart }}</ion-label>
 
-        <ion-button size="small" color="dark" fill="clear">
+        <ion-button size="small" color="dark" fill="clear" (click)="onAdd($event)">
           <ion-icon slot="icon-only" name="add"></ion-icon>
         </ion-button>
       </div>

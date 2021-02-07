@@ -18,6 +18,7 @@ export interface Grocery {
   productDescription: string;
   productName: string;
   stock: number;
+  unitsInCart: number;
 }
 
 export const mapGroceryFromServer = (serverGrocery: ServerGrocery) => {
@@ -35,6 +36,7 @@ export const mapGroceryFromServer = (serverGrocery: ServerGrocery) => {
     productDescription: serverGrocery.productDescription,
     productName: serverGrocery.productName,
     stock: serverGrocery.stock,
+    unitsInCart: 0,
   };
 
   return grocery;

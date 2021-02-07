@@ -15,7 +15,10 @@
 
   <ion-list>
     <ng-container *ngFor="let grocery of cartGroceries">
-      <app-cart-item [grocery]="grocery"></app-cart-item>
+      <app-cart-item [grocery]="grocery"
+                     (add)="onAddGrocery(grocery)"
+                     (remove)="onRemoveGrocery(grocery)">
+      </app-cart-item>
     </ng-container>
   </ion-list>
 </ion-content>

@@ -15,7 +15,28 @@ export class CartHelper {
   constructor() {}
 
   add(grocery: Grocery) {
-    this.groceries.push(grocery);
+    const cartGrocery = this.groceries.find((g) => g.id === grocery.id);
+    if (cartGrocery) {
+      cartGrocery.unitsInCart = cartGrocery.unitsInCart + 1;
+    } else {
+      this.groceries.push({ ...grocery, unitsInCart: 1 });
+    }
+
+    this.cart.next(this.groceries);
+  }
+
+  remove(grocery: Grocery) {
+    const cartGroceryIndex = this.groceries.findIndex(
+      (g) => g.id === grocery.id
+    );
+    const cartGrocery = this.groceries[cartGroceryIndex];
+
+    if (cartGrocery.unitsInCart > 1) {
+      cartGrocery.unitsInCart = cartGrocery.unitsInCart - 1;
+    } else {
+      this.groceries.splice(cartGroceryIndex, 1);
+    }
+
     this.cart.next(this.groceries);
   }
 }

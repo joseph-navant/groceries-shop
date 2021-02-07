@@ -14,6 +14,7 @@ export class ProductListPage implements OnInit {
   @ViewChild(IonInfiniteScroll)
   infiniteScroll: IonInfiniteScroll;
   cartGroceries: Grocery[];
+  cartQuantity = 0;
   groceries: Grocery[];
   private page = 1;
 
@@ -30,17 +31,13 @@ export class ProductListPage implements OnInit {
   }
 
   onAddGrocery(grocery: Grocery) {
-    const isAlreadyAdded = this.cartGroceries.some((g) => g.id === grocery.id);
-    isAlreadyAdded ? this.plusUnits(grocery) : this.addGrocery(grocery);
+    this.cartHelper.add(grocery);
     this.uiService.presentToast({ message: `${grocery.productName} added` });
   }
 
-  onPlusUnits(grocery: Grocery) {
-    // TODO
-  }
-
-  onMinusUnits(grocery: Grocery) {
-    // TODO
+  onRemoveGrocery(grocery: Grocery) {
+    this.cartHelper.remove(grocery);
+    this.uiService.presentToast({ message: `${grocery.productName} removed` });
   }
 
   onFavGrocery(grocery: Grocery) {
@@ -57,7 +54,13 @@ export class ProductListPage implements OnInit {
 
   private initCart() {
     this.cartHelper.cart$.subscribe((cartGroceries: Grocery[]) => {
+      let cartQuantity = 0;
+      for (const cartGrocery of cartGroceries) {
+        cartQuantity += cartGrocery.unitsInCart;
+      }
+
       this.cartGroceries = cartGroceries;
+      this.cartQuantity = cartQuantity;
     });
   }
 
@@ -84,18 +87,6 @@ export class ProductListPage implements OnInit {
         // TODO: handle error
       }
     );
-  }
-
-  private addGrocery(grocery: Grocery) {
-    this.cartHelper.add(grocery);
-  }
-
-  private plusUnits(grocery: Grocery) {
-    // TODO
-  }
-
-  minusUnits(grocery: Grocery) {
-    // TODO
   }
 
   private favGrocery(grocery: Grocery) {
