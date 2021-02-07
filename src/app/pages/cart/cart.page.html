@@ -22,3 +22,17 @@
     </ng-container>
   </ion-list>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div class="amount">
+      <h5>Total amount:&nbsp;</h5>
+      <ion-text color="primary">
+        <h5>${{ cart.amount }}</h5>
+      </ion-text>
+    </div>
+    <ion-button expand="block" [disabled]="cart.amount === 0">
+      Make a payment
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

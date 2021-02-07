@@ -22,4 +22,16 @@
 
 .cart {
   border-inline-start: 1px solid #ccc;
+
+  .amount-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid #ccc;
+    background: white;
+
+    & div {
+      display: flex;
+    }
+  }
 }

@@ -81,6 +81,17 @@
             </app-cart-item>
           </ng-container>
         </ion-list>
+        <div class="amount-container">
+          <div class="ion-padding">
+            <ion-button expand="block">
+              Make a payment
+            </ion-button>
+
+            <ion-text color="primary">
+              <h5>${{ cart.amount }}</h5>
+            </ion-text>
+          </div>
+        </div>
       </ion-col>
     </ion-row>
   </ion-grid>
