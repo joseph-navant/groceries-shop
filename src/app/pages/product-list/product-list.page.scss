@@ -1,4 +1,4 @@
-.fav {
+.fav-button {
   position: absolute;
   top: 0;
   right: 0;
@@ -10,6 +10,16 @@
   }
 }
 
-ion-card-content {
+.product-info {
   padding: 8px;
+
+  .add-cart-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.cart {
+  border-inline-start: 1px solid #ccc;
 }

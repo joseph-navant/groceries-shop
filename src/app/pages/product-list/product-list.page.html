@@ -1,52 +1,84 @@
-<ion-header>
+<ion-header class="ion-hide-xl-up">
   <ion-toolbar>
     <ion-title>Groceries</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onNavToCart()">
+        <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+        <ion-badge color="primary">{{ cartGroceries.length }}</ion-badge>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ng-container *ngIf="groceries; else skeleton">
-    <ion-grid>
-      <ion-row>
-        <ion-col *ngFor="let grocery of groceries" size-xl="2" size-md="4" size-xs="6">
-          <ion-card>
-            <ion-button class="fav" color="primary" size="small" fill="clear" (click)="onFavGrocery(grocery)">
-              <ion-icon [name]="grocery.isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
-            </ion-button>
-            <ion-img [src]="grocery.imageUrl"></ion-img>
-            <ion-card-content>
-              <h3>{{ grocery.productName }}</h3>
-              <ion-text color="primary">
-                <p>${{ grocery.price }}</p>
-              </ion-text>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col>
+        <h2 class="ion-hide-xl-down ion-text-center">Groceries</h2>
 
-    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadNextGroceriesPage()">
-      <ion-infinite-scroll-content loadingSpinner="dots"></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-  </ng-container>
+        <ng-container *ngIf="groceries; else skeleton">
+          <ion-grid class="ion-no-padding">
+            <ion-row>
+              <ion-col *ngFor="let grocery of groceries" size-xl="3" size-lg="4" size-md="4" size-sm="4" size-xs="6">
+                <ion-card>
+                  <ion-button class="fav-button" color="primary" size="small" fill="clear" (click)="onFavGrocery(grocery)">
+                    <ion-icon [name]="grocery.isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
+                  </ion-button>
+                  <ion-img [src]="grocery.imageUrl"></ion-img>
+                  <ion-card-content class="product-info">
+                    <h3>{{ grocery.productName }}</h3>
+                    <ion-text color="primary">
+                      <p>${{ grocery.price }}</p>
+                    </ion-text>
+                    <br />
+                    <span class="add-cart-container">
+                      <h3>{{ grocery.stock }} left</h3>
+                      <ion-button size="small" [disabled]="grocery.stock === 0" (click)="onAddGrocery(grocery)">+ add</ion-button>
+                    </span>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
 
-  <ng-template #skeleton>
-    <ion-grid>
-      <ion-row>
-        <ion-col size-xl="1" size-md="3" size-xs="6" *ngFor="let grocery of [].constructor(10)">
-          <ion-card>
-            <ion-skeleton-text animated style="height: 100px"></ion-skeleton-text>
-            <ion-card-content>
-              <h3>
-                <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-              </h3>
-              <p>
-                <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
-              </p>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ng-template>
+          <ion-infinite-scroll threshold="100px" (ionInfinite)="loadNextGroceriesPage()">
+            <ion-infinite-scroll-content loadingSpinner="dots"></ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </ng-container>
+
+        <ng-template #skeleton>
+          <ion-grid>
+            <ion-row>
+              <ion-col size-xl="1" size-md="3" size-xs="6" *ngFor="let grocery of [].constructor(10)">
+                <ion-card>
+                  <ion-skeleton-text animated style="height: 100px"></ion-skeleton-text>
+                  <ion-card-content>
+                    <h3>
+                      <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+                    </h3>
+                    <p>
+                      <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+                    </p>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ng-template>
+      </ion-col>
+
+      <ion-col class="cart ion-hide-xl-down" size="3">
+        <h2 class="ion-text-center">Cart</h2>
+
+        <div *ngIf="!cartGroceries || cartGroceries.length === 0" class="cart-empty">
+          <p>Your cart is empty</p>
+        </div>
+        <ion-list>
+          <ng-container *ngFor="let grocery of cartGroceries">
+            <app-cart-item [grocery]="grocery"></app-cart-item>
+          </ng-container>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

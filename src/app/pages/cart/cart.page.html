@@ -1,9 +1,21 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>cart</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Cart</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <div *ngIf="!cartGroceries || cartGroceries.length === 0" class="cart-empty">
+    <p>Your cart is empty</p>
+    <a routerLink="/product-list">Add groceries now</a>
+  </div>
 
+  <ion-list>
+    <ng-container *ngFor="let grocery of cartGroceries">
+      <app-cart-item [grocery]="grocery"></app-cart-item>
+    </ng-container>
+  </ion-list>
 </ion-content>

@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonInfiniteScroll } from '@ionic/angular';
+import { IonInfiniteScroll, NavController } from '@ionic/angular';
 import { Grocery } from 'src/app/core/models/grocery';
+import { CartHelper } from 'src/app/core/services/helper/cart-helper.service';
 import { GroceriesService } from 'src/app/core/services/http/groceries.service';
+import { UIService } from 'src/app/core/services/internal/ui.service';
 
 @Component({
   selector: 'app-product-list',
@@ -11,21 +13,52 @@ import { GroceriesService } from 'src/app/core/services/http/groceries.service';
 export class ProductListPage implements OnInit {
   @ViewChild(IonInfiniteScroll)
   infiniteScroll: IonInfiniteScroll;
+  cartGroceries: Grocery[];
   groceries: Grocery[];
   private page = 1;
 
-  constructor(private readonly groceriesService: GroceriesService) {}
+  constructor(
+    private readonly cartHelper: CartHelper,
+    private readonly groceriesService: GroceriesService,
+    private readonly navCtrl: NavController,
+    private readonly uiService: UIService
+  ) {}
 
   ngOnInit() {
+    this.initCart();
     this.initGroceries();
+  }
+
+  onAddGrocery(grocery: Grocery) {
+    const isAlreadyAdded = this.cartGroceries.some((g) => g.id === grocery.id);
+    isAlreadyAdded ? this.plusUnits(grocery) : this.addGrocery(grocery);
+    this.uiService.presentToast({ message: `${grocery.productName} added` });
+  }
+
+  onPlusUnits(grocery: Grocery) {
+    // TODO
+  }
+
+  onMinusUnits(grocery: Grocery) {
+    // TODO
   }
 
   onFavGrocery(grocery: Grocery) {
     this.favGrocery(grocery);
   }
 
+  onNavToCart() {
+    this.navToCart();
+  }
+
   loadNextGroceriesPage() {
     this.loadGroceries(++this.page);
+  }
+
+  private initCart() {
+    this.cartHelper.cart$.subscribe((cartGroceries: Grocery[]) => {
+      this.cartGroceries = cartGroceries;
+    });
   }
 
   private initGroceries() {
@@ -53,6 +86,18 @@ export class ProductListPage implements OnInit {
     );
   }
 
+  private addGrocery(grocery: Grocery) {
+    this.cartHelper.add(grocery);
+  }
+
+  private plusUnits(grocery: Grocery) {
+    // TODO
+  }
+
+  minusUnits(grocery: Grocery) {
+    // TODO
+  }
+
   private favGrocery(grocery: Grocery) {
     this.groceriesService.favGrocery(grocery);
   }
@@ -65,5 +110,11 @@ export class ProductListPage implements OnInit {
 
   private disableInfiniteScroll() {
     this.infiniteScroll.disabled = true;
+  }
+
+  private navToCart() {
+    this.navCtrl.navigateForward('/cart', {
+      state: { cartGroceries: this.cartGroceries },
+    });
   }
 }
