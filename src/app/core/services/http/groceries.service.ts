@@ -16,19 +16,19 @@ import {
 export class GroceriesService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  getGroceries(page: number, limit = 12) {
-    return this.httpClient
-      .get<ServerGrocery[]>(
-        `${environment.baseUrl}?_page=${page}&_limit=${limit}`
-      )
-      .pipe(
-        switchMap((serverGroceries: ServerGrocery[]) => {
-          return from(serverGroceries || []).pipe(
-            map((serverGrocery) => mapGroceryFromServer(serverGrocery)),
-            toArray()
-          );
-        })
-      );
+  getGroceries(page: number, favorites?: boolean, limit = 16) {
+    let url = `${environment.baseUrl}?_page=${page}&_limit=${limit}`;
+    if (favorites) {
+      url += '&favorite=1';
+    }
+    return this.httpClient.get<ServerGrocery[]>(url).pipe(
+      switchMap((serverGroceries: ServerGrocery[]) => {
+        return from(serverGroceries || []).pipe(
+          map((serverGrocery) => mapGroceryFromServer(serverGrocery)),
+          toArray()
+        );
+      })
+    );
   }
 
   favGrocery(grocery: Grocery) {

@@ -13,6 +13,12 @@
 <ion-content>
   <h2 class="ion-hide-xl-down ion-text-center">Groceries</h2>
 
+
+  <div class="ion-text-end ion-padding">
+    <a *ngIf="areFavorites" (click)="onShowAll()">View all</a>
+    <a *ngIf="!areFavorites" (click)="onShowFavorites()">View favorites</a>
+  </div>
+
   <ng-container *ngIf="groceries; else skeleton">
     <ion-grid class="ion-no-padding">
       <ion-row>

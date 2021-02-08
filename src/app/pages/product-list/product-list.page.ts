@@ -17,10 +17,11 @@ import { GroceriesService } from 'src/app/core/services/http/groceries.service';
 export class ProductListPage implements OnInit {
   @ViewChild(IonInfiniteScroll)
   infiniteScroll: IonInfiniteScroll;
+  areFavorites = false;
   cartQuantity = 0;
   groceries: Grocery[];
   private loading: HTMLIonLoadingElement;
-  private page = 1;
+  private page: number;
 
   constructor(
     private readonly cartHelper: CartHelper,
@@ -46,6 +47,16 @@ export class ProductListPage implements OnInit {
     this.menu.open();
   }
 
+  onShowAll() {
+    this.areFavorites = false;
+    this.initGroceries();
+  }
+
+  onShowFavorites() {
+    this.areFavorites = true;
+    this.initGroceries();
+  }
+
   async onFavGrocery(grocery: Grocery, index: number) {
     this.loading = await this.loadingCtrl.create();
     await this.loading.present();
@@ -63,11 +74,13 @@ export class ProductListPage implements OnInit {
   }
 
   private initGroceries() {
+    this.groceries = null;
+    this.page = 1;
     this.loadGroceries(this.page);
   }
 
   private loadGroceries(page: number) {
-    this.groceriesService.getGroceries(page).subscribe(
+    this.groceriesService.getGroceries(page, this.areFavorites).subscribe(
       (groceries: Grocery[]) => {
         this.groceries = this.groceries
           ? this.groceries.concat(groceries)
