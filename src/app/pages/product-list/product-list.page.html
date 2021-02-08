@@ -2,97 +2,70 @@
   <ion-toolbar>
     <ion-title>Groceries</ion-title>
     <ion-buttons slot="end">
-      <ion-button routerLink="/cart">
+      <ion-button (click)="onShowCart()">
         <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
-        <ion-badge color="primary">{{ cart.quantity }}</ion-badge>
+        <ion-badge color="primary">{{ cartQuantity }}</ion-badge>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid class="ion-no-padding">
-    <ion-row>
-      <ion-col>
-        <h2 class="ion-hide-xl-down ion-text-center">Groceries</h2>
+  <h2 class="ion-hide-xl-down ion-text-center">Groceries</h2>
 
-        <ng-container *ngIf="groceries; else skeleton">
-          <ion-grid class="ion-no-padding">
-            <ion-row>
-              <ion-col *ngFor="let grocery of groceries; let i=index" size-xl="3" size-lg="4" size-md="4" size-sm="4" size-xs="6">
-                <ion-card>
-                  <ion-button class="fav-button" color="primary" size="small" fill="clear" (click)="onFavGrocery(grocery, i)">
-                    <ion-icon [name]="grocery.isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
-                  </ion-button>
-                  <ion-img [src]="grocery.imageUrl"></ion-img>
-                  <ion-card-content class="product-info">
-                    <h3>{{ grocery.productName }}</h3>
-                    <ion-text color="primary">
-                      <p>${{ grocery.price }}</p>
-                    </ion-text>
-                    <br />
-                    <span class="add-cart-container">
-                      <h3>{{ grocery.stock }} left</h3>
-                      <ion-button size="small" [disabled]="grocery.stock === 0" (click)="onAddGrocery(grocery)">+ add</ion-button>
-                    </span>
-                  </ion-card-content>
-                </ion-card>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-
-          <ion-infinite-scroll threshold="100px" (ionInfinite)="loadNextGroceriesPage()">
-            <ion-infinite-scroll-content loadingSpinner="dots"></ion-infinite-scroll-content>
-          </ion-infinite-scroll>
-        </ng-container>
-
-        <ng-template #skeleton>
-          <ion-grid>
-            <ion-row>
-              <ion-col size-xl="1" size-md="3" size-xs="6" *ngFor="let grocery of [].constructor(10)">
-                <ion-card>
-                  <ion-skeleton-text animated style="height: 100px"></ion-skeleton-text>
-                  <ion-card-content>
-                    <h3>
-                      <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-                    </h3>
-                    <p>
-                      <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
-                    </p>
-                  </ion-card-content>
-                </ion-card>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ng-template>
-      </ion-col>
-
-      <ion-col class="cart ion-hide-xl-down" size="3">
-        <h2 class="ion-text-center">Cart</h2>
-
-        <div *ngIf="!cart.groceries || cart.groceries.length === 0" class="cart-empty">
-          <p>Your cart is empty</p>
-        </div>
-        <ion-list>
-          <ng-container *ngFor="let grocery of cart.groceries">
-            <app-cart-item [grocery]="grocery"
-                           (add)="onAddGrocery(grocery)"
-                           (remove)="onRemoveGrocery(grocery)">
-            </app-cart-item>
-          </ng-container>
-        </ion-list>
-        <div class="amount-container">
-          <div class="ion-padding">
-            <ion-button expand="block">
-              Make a payment
+  <ng-container *ngIf="groceries; else skeleton">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col *ngFor="let grocery of groceries; let i=index" size-xl="3" size-lg="4" size-md="4" size-sm="4" size-xs="6">
+          <ion-card>
+            <ion-button class="fav-button" color="primary" size="small" fill="clear" (click)="onFavGrocery(grocery, i)">
+              <ion-icon [name]="grocery.isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
             </ion-button>
 
-            <ion-text color="primary">
-              <h5>${{ cart.amount }}</h5>
-            </ion-text>
-          </div>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+            <ion-img [src]="grocery.imageUrl"></ion-img>
+
+            <ion-card-content class="product-info">
+              <h3>{{ grocery.productName }}</h3>
+              <ion-text color="primary">
+                <p>${{ grocery.price }}</p>
+              </ion-text>
+              <br />
+              <div class="add-cart-container">
+                <h3>{{ grocery.stock }} left</h3>
+                <ion-button size="small" [disabled]="grocery.stock === 0" (click)="onAddGrocery(grocery)">+ add</ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadNextGroceriesPage()">
+      <ion-infinite-scroll-content loadingSpinner="dots"></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ng-container>
+
+  <ng-template #skeleton>
+    <ion-grid>
+      <ion-row>
+        <ion-col *ngFor="let grocery of [].constructor(16)" size-xl="3" size-lg="4" size-md="4" size-sm="4" size-xs="6">
+          <ion-card>
+            <ion-skeleton-text animated style="height: 150px"></ion-skeleton-text>
+            <ion-card-content class="product-info">
+              <h3>
+                <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+              </h3>
+              <p>
+                <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
+              </p>
+              <br />
+              <div class="add-cart-container">
+                <ion-skeleton-text animated></ion-skeleton-text>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-template>
 </ion-content>

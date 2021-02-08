@@ -30,5 +30,17 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 50%;
+  top: 50%;
+}
+
+.footer-btn {
+  .cart-amount {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 11px;
+  }
+  ion-toolbar ion-button {
+    margin: 8px;
+  }
 }
