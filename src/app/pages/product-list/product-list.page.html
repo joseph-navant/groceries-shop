@@ -4,7 +4,9 @@
     <ion-buttons slot="end">
       <ion-button (click)="onShowCart()">
         <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
-        <ion-badge color="primary">{{ cartQuantity }}</ion-badge>
+        <ng-container *ngIf="cart$ | async as cart">
+          <ion-badge color="primary">{{ cart?.quantity }}</ion-badge>
+        </ng-container>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

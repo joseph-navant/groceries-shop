@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   IonInfiniteScroll,
   LoadingController,
   MenuController,
 } from '@ionic/angular';
-import { Cart } from 'src/app/core/models/cart';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/internal/operators';
 import { Grocery } from 'src/app/core/models/grocery';
 import { CartHelper } from 'src/app/core/services/helper/cart-helper.service';
 import { GroceriesService } from 'src/app/core/services/http/groceries.service';
@@ -14,14 +15,15 @@ import { GroceriesService } from 'src/app/core/services/http/groceries.service';
   templateUrl: './product-list.page.html',
   styleUrls: ['./product-list.page.scss'],
 })
-export class ProductListPage implements OnInit {
+export class ProductListPage implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll)
   infiniteScroll: IonInfiniteScroll;
   areFavorites = false;
-  cartQuantity = 0;
   groceries: Grocery[];
+  cart$ = this.cartHelper.cart$;
   private loading: HTMLIonLoadingElement;
   private page: number;
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private readonly cartHelper: CartHelper,
@@ -31,8 +33,12 @@ export class ProductListPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.initCart();
     this.initGroceries();
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   onAddGrocery(grocery: Grocery) {
@@ -67,12 +73,6 @@ export class ProductListPage implements OnInit {
     this.loadGroceries(++this.page);
   }
 
-  private initCart() {
-    this.cartHelper.cart$.subscribe((cart: Cart) => {
-      this.cartQuantity = cart.quantity;
-    });
-  }
-
   private initGroceries() {
     this.groceries = null;
     this.page = 1;
@@ -80,24 +80,27 @@ export class ProductListPage implements OnInit {
   }
 
   private loadGroceries(page: number) {
-    this.groceriesService.getGroceries(page, this.areFavorites).subscribe(
-      (groceries: Grocery[]) => {
-        this.groceries = this.groceries
-          ? this.groceries.concat(groceries)
-          : groceries;
+    this.groceriesService
+      .getGroceries(page, this.areFavorites)
+      .pipe(takeUntil(this.unsubscribe$)) // TODO: use NgRx Effects instead ?
+      .subscribe(
+        (groceries: Grocery[]) => {
+          this.groceries = this.groceries
+            ? this.groceries.concat(groceries)
+            : groceries;
 
-        this.page = page;
+          this.page = page;
 
-        // TODO: add items count to server response
-        this.groceries.length === 1000
-          ? this.disableInfiniteScroll()
-          : this.completeInfiniteScroll();
-      },
-      (err) => {
-        console.error('🚀 ~ ProductListPage ~ initGroceries ~ err', err);
-        // TODO: handle error
-      }
-    );
+          // TODO: add items count to server response
+          this.groceries.length === 1000
+            ? this.disableInfiniteScroll()
+            : this.completeInfiniteScroll();
+        },
+        (err) => {
+          console.error('🚀 ~ ProductListPage ~ initGroceries ~ err', err);
+          // TODO: handle error
+        }
+      );
   }
 
   private favGrocery(grocery: Grocery, index: number) {
