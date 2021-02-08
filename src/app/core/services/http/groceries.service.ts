@@ -16,7 +16,7 @@ import {
 export class GroceriesService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  getGroceries(page: number, limit = 10) {
+  getGroceries(page: number, limit = 12) {
     return this.httpClient
       .get<ServerGrocery[]>(
         `${environment.baseUrl}?_page=${page}&_limit=${limit}`
