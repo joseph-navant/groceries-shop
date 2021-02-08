@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MenuController } from '@ionic/angular';
-import { Cart } from './core/models/cart';
 import { Grocery } from './core/models/grocery';
 import { CartHelper } from './core/services/helper/cart-helper.service';
 
@@ -9,17 +8,13 @@ import { CartHelper } from './core/services/helper/cart-helper.service';
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit {
-  cart: Cart;
+export class AppComponent {
+  cart$ = this.cartHelper.cart$;
 
   constructor(
     private readonly cartHelper: CartHelper,
     private readonly menu: MenuController
   ) {}
-
-  ngOnInit() {
-    this.initCart();
-  }
 
   onAddGrocery(grocery: Grocery) {
     this.cartHelper.add(grocery);
@@ -31,11 +26,5 @@ export class AppComponent implements OnInit {
 
   onHideCart() {
     this.menu.close();
-  }
-
-  private initCart() {
-    this.cartHelper.cart$.subscribe((cart: Cart) => {
-      this.cart = cart;
-    });
   }
 }

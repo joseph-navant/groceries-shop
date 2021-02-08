@@ -6,38 +6,40 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content>
-      <h2 class="ion-hide-xl-down ion-text-center">Cart</h2>
+    <ng-container *ngIf="cart$ | async as cart">
+      <ion-content>
+        <h2 class="ion-hide-xl-down ion-text-center">Cart</h2>
 
-      <div *ngIf="!cart.groceries || cart.groceries.length === 0" class="cart-empty">
-        <p>Your cart is empty</p>
-        <ion-text class="ion-hide-xl-up" color="primary" (click)="onHideCart()">
-          Add groceries now
-        </ion-text>
-      </div>
-      <ion-list>
-        <ng-container *ngFor="let grocery of cart.groceries">
-          <app-cart-item [grocery]="grocery"
-                         (add)="onAddGrocery(grocery)"
-                         (remove)="onRemoveGrocery(grocery)">
-          </app-cart-item>
-        </ng-container>
-      </ion-list>
-    </ion-content>
-
-    <ion-footer class="footer-btn">
-      <ion-toolbar>
-        <div class="cart-amount">
-          <h5>Total amount:&nbsp;</h5>
-          <ion-text color="primary">
-            <h5>${{ cart.amount }}</h5>
+        <div *ngIf="!cart?.groceries || cart?.groceries.length === 0" class="cart-empty">
+          <p>Your cart is empty</p>
+          <ion-text class="ion-hide-xl-up" color="primary" (click)="onHideCart()">
+            Add groceries now
           </ion-text>
         </div>
-        <ion-button expand="block" [disabled]="cart.amount === 0">
-          Make a payment
-        </ion-button>
-      </ion-toolbar>
-    </ion-footer>
+        <ion-list>
+          <ng-container *ngFor="let grocery of cart?.groceries">
+            <app-cart-item [grocery]="grocery"
+                           (add)="onAddGrocery(grocery)"
+                           (remove)="onRemoveGrocery(grocery)">
+            </app-cart-item>
+          </ng-container>
+        </ion-list>
+      </ion-content>
+
+      <ion-footer class="footer-btn">
+        <ion-toolbar>
+          <div class="cart-amount">
+            <h5>Total amount:&nbsp;</h5>
+            <ion-text color="primary">
+              <h5>${{ cart?.amount }}</h5>
+            </ion-text>
+          </div>
+          <ion-button expand="block" [disabled]="cart?.amount === 0">
+            Make a payment
+          </ion-button>
+        </ion-toolbar>
+      </ion-footer>
+    </ng-container>
   </ion-menu>
 
   <ion-router-outlet id="main"></ion-router-outlet>
