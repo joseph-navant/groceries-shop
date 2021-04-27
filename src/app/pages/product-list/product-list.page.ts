@@ -1,11 +1,10 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   IonInfiniteScroll,
   LoadingController,
   MenuController,
 } from '@ionic/angular';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/internal/operators';
+import { take } from 'rxjs/internal/operators';
 import { Grocery } from 'src/app/core/models/grocery';
 import { CartHelper } from 'src/app/core/services/helper/cart-helper.service';
 import { GroceriesService } from 'src/app/core/services/http/groceries.service';
@@ -15,7 +14,7 @@ import { GroceriesService } from 'src/app/core/services/http/groceries.service';
   templateUrl: './product-list.page.html',
   styleUrls: ['./product-list.page.scss'],
 })
-export class ProductListPage implements OnInit, OnDestroy {
+export class ProductListPage implements OnInit {
   @ViewChild(IonInfiniteScroll)
   infiniteScroll: IonInfiniteScroll;
   areFavorites = false;
@@ -23,7 +22,6 @@ export class ProductListPage implements OnInit, OnDestroy {
   cart$ = this.cartHelper.cart$;
   private loading: HTMLIonLoadingElement;
   private page: number;
-  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private readonly cartHelper: CartHelper,
@@ -34,11 +32,6 @@ export class ProductListPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initGroceries();
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 
   onAddGrocery(grocery: Grocery) {
@@ -82,7 +75,7 @@ export class ProductListPage implements OnInit, OnDestroy {
   private loadGroceries(page: number) {
     this.groceriesService
       .getGroceries(page, this.areFavorites)
-      .pipe(takeUntil(this.unsubscribe$)) // TODO: use NgRx Effects instead ?
+      .pipe(take(1)) // TODO: use NgRx Effects instead ?
       .subscribe(
         (groceries: Grocery[]) => {
           this.groceries = this.groceries
